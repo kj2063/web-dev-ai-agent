@@ -1,42 +1,3 @@
-import sys
-from fastapi import Request
-
-# 필수 패키지 확인
-required_packages = {
-    'fastapi': 'fastapi',
-    'uvicorn': 'uvicorn',
-    'pydantic': 'pydantic',
-    'langchain_openai': 'langchain-openai',
-    'langchain': 'langchain',
-    'langchain_community': 'langchain-community',
-    'dotenv': 'python-dotenv'
-}
-
-missing_packages = []
-for module_name, package_name in required_packages.items():
-    try:
-        __import__(module_name)
-    except ImportError:
-        missing_packages.append(package_name)
-
-if missing_packages:
-    print("=" * 60)
-    print("오류: 필요한 패키지가 설치되지 않았습니다!")
-    print("=" * 60)
-    print(f"누락된 패키지: {', '.join(missing_packages)}")
-    print("\n[권장] 가상환경 사용 (권한 문제 해결):")
-    print("  bash setup_venv.sh")
-    print("  source venv/bin/activate")
-    print("  python -m src.server")
-    print("\n[대안 1] 직접 설치:")
-    print(f"  pip install {' '.join(missing_packages)}")
-    print("\n[대안 2] Conda 사용:")
-    print("  conda install -c conda-forge uvicorn")
-    print("  pip install langchain-openai langchain-community")
-    print("\n자세한 내용은 README_SETUP.md를 참조하세요.")
-    print("=" * 60)
-    sys.exit(1)
-
 import os
 import logging
 from pathlib import Path
@@ -55,7 +16,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("server")
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional

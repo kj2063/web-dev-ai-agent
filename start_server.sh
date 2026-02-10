@@ -26,6 +26,12 @@ if [ -d "venv/bin" ]; then
   source venv/bin/activate
 fi
 
+# 서버 실행에 필요한 패키지 설치 여부 확인
+if ! python check_packages.py; then
+  echo "패키지 검사 실패. 위 메시지를 확인한 뒤 패키지를 설치한 후 다시 시도하세요."
+  exit 1
+fi
+
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 서버 시작" >> "$LOG_FILE"
 nohup python -m src.server >> "$LOG_FILE" 2>&1 &
 echo $! > "$PID_FILE"
