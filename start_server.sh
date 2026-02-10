@@ -34,5 +34,17 @@ fi
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 서버 시작" >> "$LOG_FILE"
 nohup python -m src.server >> "$LOG_FILE" 2>&1 &
-echo $! > "$PID_FILE"
-echo "서버를 백그라운드에서 시작했습니다 (PID: $(cat "$PID_FILE")). 로그: $LOG_FILE"
+SERVER_PID=$!
+echo $SERVER_PID > "$PID_FILE"
+
+# 서버가 정상 기동했는지 잠시 후 확인 (실패 시 에러 로그 출력)
+sleep 2
+if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+  rm -f "$PID_FILE"
+  echo "서버 실행에 실패했습니다. 로그 마지막 내용:" >&2
+  echo "---" >&2
+  tail -n 50 "$LOG_FILE" >&2
+  exit 1
+fi
+
+echo "서버를 백그라운드에서 시작했습니다 (PID: $SERVER_PID). 로그: $LOG_FILE"
